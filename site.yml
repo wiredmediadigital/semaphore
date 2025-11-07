@@ -1,5 +1,5 @@
 ---
-- hosts: localvm-tunnel
+- hosts: 10.0.0.211
   become: true
   tasks:
     - name: Print OS info
