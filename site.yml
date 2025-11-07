@@ -1,12 +1,27 @@
 ---
-- hosts: 10.0.0.211
-  become: true
-  tasks:
-    - name: Print OS info
-      ansible.builtin.debug:
-        msg: "Running on {{ ansible_distribution }} {{ ansible_distribution_version }}"
+- name: Configure localvm-tunnel
+  hosts: localvm-tunnel
+  become: true   # Use sudo for tasks that need root
+  gather_facts: yes
 
-    - name: Install Apache2
+  tasks:
+    - name: Print OS information
+      ansible.builtin.shell: uname -a
+      register: os_info
+
+    - name: Show OS information
+      ansible.builtin.debug:
+        msg: "{{ os_info.stdout }}"
+
+    # Example task: install Apache2
+    - name: Install Apache web server
       ansible.builtin.package:
         name: apache2
         state: present
+
+    # Example task: ensure service is running
+    - name: Ensure Apache is running
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: yes
