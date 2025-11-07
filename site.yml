@@ -1,27 +1,28 @@
 ---
-- name: Configure localvm-tunnel
+- name: Configure local VM
   hosts: localvm-tunnel
-  become: true   # Use sudo for tasks that need root
-  gather_facts: yes
-
+  become: true
   tasks:
-    - name: Print OS information
-      ansible.builtin.shell: uname -a
-      register: os_info
 
-    - name: Show OS information
-      ansible.builtin.debug:
-        msg: "{{ os_info.stdout }}"
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
 
-    # Example task: install Apache2
-    - name: Install Apache web server
-      ansible.builtin.package:
+    - name: Install Apache2
+      ansible.builtin.apt:
         name: apache2
         state: present
 
-    # Example task: ensure service is running
-    - name: Ensure Apache is running
+    - name: Ensure Apache2 is running
       ansible.builtin.service:
         name: apache2
         state: started
         enabled: yes
+
+    - name: Print OS information
+      ansible.builtin.command: lsb_release -a
+      register: os_info
+
+    - name: Show OS info
+      ansible.builtin.debug:
+        var: os_info.stdout_lines
